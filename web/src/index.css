@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+
+/* Identidad Mojave: la misma de la presentación del piloto. */
+@theme {
+  --color-tinta: #14181f;
+  --color-pizarra: #2e3744;
+  --color-niebla: #5b6270;
+  --color-ceniza: #aeb5c0;
+  --color-duna: #ddd4c4;
+  --color-duna-suave: #ebe4d7;
+  --color-arena: #f5f1ea;
+  --color-papel: #fcfaf6;
+  --color-terracota: #e0662e;
+  --color-arcilla: #b04512;
+  --color-cielo: #3d6e9c;
+  --color-cielo-suave: #e3ecf5;
+
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala 1.25 sobre 16 px */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-4xl: 3.052rem;
+
+  --radius-control: 6px;
+  --radius-hoja: 14px;
+
+  --animate-entrar-hoja: entrar-hoja 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-sellar: sellar 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  @keyframes entrar-hoja {
+    from {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sellar {
+    0% {
+      transform: scale(1.35) rotate(-6deg);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(0.96) rotate(-2deg);
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-arena font-sans text-tinta antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-balance;
+    letter-spacing: -0.015em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cielo);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-terracota) 30%, transparent);
+  }
+}
+
+/* @utility para poder reutilizarla con @apply en las variantes (Tailwind 4). */
+@utility boton {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-4 text-sm font-semibold
+    transition-[background-color,color,transform] active:translate-y-px
+    disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@layer components {
+  .cifra {
+    @apply font-display;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .campo {
+    @apply w-full rounded-control border border-duna bg-papel px-3 py-2.5 text-base text-tinta
+      placeholder:text-ceniza transition-colors
+      hover:border-ceniza focus:border-tinta focus:outline-none
+      aria-invalid:border-arcilla aria-invalid:bg-[#fdf3ee];
+  }
+
+  .boton-primario {
+    @apply boton bg-tinta text-papel hover:bg-pizarra;
+  }
+
+  .boton-acento {
+    @apply boton bg-terracota text-tinta hover:bg-[#ea7a45];
+  }
+
+  .boton-secundario {
+    @apply boton border border-duna bg-papel text-tinta hover:border-ceniza;
+  }
+
+  .boton-texto {
+    @apply boton min-h-9 px-2 text-arcilla underline-offset-4 hover:underline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

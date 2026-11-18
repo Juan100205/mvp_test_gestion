@@ -1,0 +1,11 @@
+.env
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/dev-dist/
+**/coverage/
+**/TestResults/
+*.user
+.vs/
+*.tsbuildinfo
