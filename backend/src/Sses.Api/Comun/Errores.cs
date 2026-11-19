@@ -21,7 +21,11 @@ public static class Problema
 
 public sealed class ManejadorErrores(IProblemDetailsService problemas, ILogger<ManejadorErrores> log) : IExceptionHandler
 {
-    private static readonly HashSet<string> Conflictos = [Errores.EstrategiaBloqueada, Errores.EstudianteYaVinculado];
+    private static readonly HashSet<string> Conflictos =
+    [
+        Errores.EstrategiaBloqueada, Errores.EstudianteYaVinculado, Errores.SesionFueraDeHorario, Errores.EncuestaYaRespondida,
+        Errores.SinAsistencia,
+    ];
 
     public async ValueTask<bool> TryHandleAsync(HttpContext http, Exception ex, CancellationToken ct)
     {

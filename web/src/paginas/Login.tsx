@@ -7,7 +7,7 @@ import { useSesion } from '../lib/sesion'
 import { nombreRol, type Rol } from '../lib/tipos'
 
 export const rutaInicial = (rol: Rol) =>
-  rol === 'Tutor' ? '/estrategias' : rol === 'Administrador' ? '/trazabilidad' : '/inicio'
+  rol === 'Tutor' ? '/estrategias' : rol === 'Administrador' ? '/trazabilidad' : rol === 'LiderPilotaje' ? '/sesiones' : '/reportes'
 
 const cuentasDemo: { usuario: string; rol: Rol; quien: string }[] = [
   { usuario: 'tutor.caribe', rol: 'Tutor', quien: 'Laura Gómez, Caribe' },

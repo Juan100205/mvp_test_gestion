@@ -18,6 +18,13 @@ public static class Errores
     public const string DocenteNoAsociado = "docente_no_asociado";
     public const string DocentesNoCorrespondenAlTipo = "docentes_no_corresponden_al_tipo";
     public const string SeguimientoInvalido = "seguimiento_invalido";
+    public const string TutorDeOtraRegion = "tutor_de_otra_region";
+    public const string HorarioNoValido = "horario_no_valido";
+    public const string NoConvocado = "no_convocado";
+    public const string SesionFueraDeHorario = "sesion_fuera_de_horario";
+    public const string SinAsistencia = "sin_asistencia";
+    public const string EncuestaYaRespondida = "encuesta_ya_respondida";
+    public const string RespuestaNoValida = "respuesta_no_valida";
 }
 
 public enum Rol

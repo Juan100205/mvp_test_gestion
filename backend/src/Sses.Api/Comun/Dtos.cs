@@ -26,6 +26,33 @@ public record SeguimientoDto(Guid Id, int Semana, string Actividades, int Avance
 public record AcompanamientoDto(Guid Id, int EstrategiaId, TipoAcompanamiento Tipo, string Periodo, string Objetivo, string Compromisos,
     IReadOnlyList<DocenteDto> Docentes, int AvanceActual, IReadOnlyList<SeguimientoDto> Seguimientos, DateTimeOffset RegistradoEn, bool Existente);
 
+public record TutorReporteDto(int Id, string Nombre, string Region);
+public record FiltrosReporteDto(IReadOnlyList<string> Regiones, IReadOnlyList<EntidadDto> Entidades, IReadOnlyList<TutorReporteDto> Tutores,
+    IReadOnlyList<string> Periodos, IReadOnlyList<string> Meses);
+
+public record TipoReporteDto(string Id, string Nombre, string Descripcion, string Grupo, IReadOnlyList<string> Filtros,
+    IReadOnlyList<string> Requeridos);
+public record CifraDto(string Etiqueta, string Valor, bool Destacada = false);
+public record TablaDto(string Titulo, IReadOnlyList<string> Encabezado, IReadOnlyList<int> Numericas, IReadOnlyList<IReadOnlyList<string>> Filas);
+/// <summary>Documento genérico (reportes y consolidado de sesión): el front lo muestra, lo previsualiza y lo exporta en CSV o PDF.</summary>
+public record ReporteDocumentoDto(string Tipo, string Titulo, string Descripcion, DateTimeOffset GeneradoEn, string Filtros,
+    IReadOnlyList<CifraDto> Cifras, IReadOnlyList<TablaDto> Tablas, string Nota, bool SinDatos);
+public record DescargaReporteRequest(string? Tipo, string? Formato, string? Filtros);
+
+public record ProgramarSesionRequest(string? Nombre, string? Region, DateTimeOffset Inicio, int DuracionMinutos, int[]? TutorIds);
+public record SesionResumenDto(int Id, string Nombre, string Region, DateTimeOffset Inicio, DateTimeOffset Fin, EstadoSesion Estado,
+    int Convocados, int Asistentes, int Encuestas);
+public record ConvocadoDto(int Id, string Nombre, DateTimeOffset? IngresoEn, bool EncuestaRespondida);
+public record IncidenteDto(long Id, string Descripcion, DateTimeOffset RegistradoEn);
+public record SesionDetalleDto(int Id, string Nombre, string Region, DateTimeOffset Inicio, DateTimeOffset Fin, EstadoSesion Estado,
+    IReadOnlyList<ConvocadoDto> Convocados, IReadOnlyList<IncidenteDto> Incidentes);
+public record MiSesionDto(int Id, string Nombre, string Region, DateTimeOffset Inicio, DateTimeOffset Fin, EstadoSesion Estado,
+    bool PuedeIngresar, DateTimeOffset? IngresoEn, bool EncuestaRespondida);
+public record PreguntaDto(string Clave, string Texto);
+public record EncuestaRequest(int?[]? Respuestas, string? Comentario);
+public record IncidenteRequest(string? Descripcion);
+public record ExportarSesionRequest(string? Formato);
+
 public record AuditoriaDto(long Id, string Usuario, string Operacion, string Recurso, string? RecursoId, string? Detalle, DateTimeOffset Fecha);
 
 public static class Mapeos

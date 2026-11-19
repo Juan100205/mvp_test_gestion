@@ -43,7 +43,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(Politicas.Tutor, p => p.RequireRole(Politicas.Tutor))
-    .AddPolicy(Politicas.Administrador, p => p.RequireRole(Politicas.Administrador));
+    .AddPolicy(Politicas.Administrador, p => p.RequireRole(Politicas.Administrador))
+    .AddPolicy(Politicas.LiderPilotaje, p => p.RequireRole(Politicas.LiderPilotaje))
+    .AddPolicy(Politicas.Reportes, p => p.RequireRole(nameof(Rol.Funcionario), nameof(Rol.EnteControl), Politicas.Administrador));
 
 // Protección contra fuerza bruta además del bloqueo por cuenta.
 var loginPorMinuto = builder.Configuration.GetValue("Sses:LoginPorMinuto", 30);
@@ -77,7 +79,10 @@ if (app.Configuration.GetValue<bool>("Sses:InicializarBaseDeDatos"))
     var db = scope.ServiceProvider.GetRequiredService<SsesDbContext>();
     await DatosPrecargados.InicializarAsync(db);
     if (app.Configuration.GetValue<bool>("Sses:CargarDatosDemo"))
+    {
         await DatosDemo.CargarAsync(db, TimeProvider.System.GetUtcNow());
+        await DatosDemoSesiones.CargarAsync(db, TimeProvider.System.GetUtcNow());
+    }
 }
 
 app.UseForwardedHeaders();
@@ -85,6 +90,7 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<MedidorDeUso>();
 app.UseRateLimiter();
 
 if (!app.Environment.IsProduction()) app.MapOpenApi();
@@ -96,6 +102,8 @@ app.MapGet("/health", async (SsesDbContext db, CancellationToken ct) =>
 app.MapAcceso();
 app.MapEstrategias();
 app.MapAcompanamientos();
+app.MapReportes();
+app.MapSesiones();
 
 app.Run();
 

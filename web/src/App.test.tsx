@@ -28,10 +28,24 @@ describe('Rutas por perfil', () => {
     expect(await screen.findByRole('heading', { name: /trazabilidad/i })).toBeInTheDocument()
   })
 
-  it('el ente de control ve el aviso del módulo del Sprint 4', async () => {
+  it('el ente de control no puede abrir las estrategias: va a sus reportes', async () => {
     iniciarSesionComo('EnteControl')
-    simularApi({})
+    simularApi({ 'GET /api/reportes/tipos': { cuerpo: [] }, 'GET /api/reportes/filtros': { cuerpo: { regiones: [], entidades: [], tutores: [], periodos: [], meses: [] } } })
     pintar(<Rutas />, { ruta: '/estrategias' })
-    expect(await screen.findByText(/sprint 4/i)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /^reportes$/i })).toBeInTheDocument()
+  })
+
+  it('el funcionario entra a los reportes (CU-04)', async () => {
+    iniciarSesionComo('Funcionario')
+    simularApi({ 'GET /api/reportes/tipos': { cuerpo: [] }, 'GET /api/reportes/filtros': { cuerpo: { regiones: [], entidades: [], tutores: [], periodos: [], meses: [] } } })
+    pintar(<Rutas />, { ruta: '/' })
+    expect(await screen.findByRole('heading', { name: /^reportes$/i })).toBeInTheDocument()
+  })
+
+  it('el líder de pilotaje entra a las sesiones y no a la trazabilidad (CU-07)', async () => {
+    iniciarSesionComo('LiderPilotaje')
+    simularApi({ 'GET /api/sesiones': { cuerpo: [] } })
+    pintar(<Rutas />, { ruta: '/trazabilidad' })
+    expect(await screen.findByRole('heading', { name: /sesiones de pilotaje/i })).toBeInTheDocument()
   })
 })

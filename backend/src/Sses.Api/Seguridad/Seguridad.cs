@@ -21,6 +21,11 @@ public static class Politicas
 {
     public const string Tutor = nameof(Rol.Tutor);
     public const string Administrador = nameof(Rol.Administrador);
+
+    public const string LiderPilotaje = nameof(Rol.LiderPilotaje);
+
+    /// <summary>CU-04 y CU-05: consulta y descarga de reportes (funcionario, ente de control y administrador).</summary>
+    public const string Reportes = "Reportes";
 }
 
 public static class ClaimsSses
@@ -34,6 +39,9 @@ public static class ClaimsSses
 
     public static string Username(this ClaimsPrincipal principal) =>
         principal.FindFirstValue(Usuario) ?? "anonimo";
+
+    public static Sses.Domain.Rol RolUsuario(this ClaimsPrincipal principal) =>
+        Enum.Parse<Sses.Domain.Rol>(principal.FindFirstValue(Rol)!);
 }
 
 public sealed class EmisorTokens(OpcionesJwt opciones, TimeProvider reloj)

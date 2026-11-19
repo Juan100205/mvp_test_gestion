@@ -6,8 +6,10 @@ import { Acompanamientos } from './paginas/Acompanamientos'
 import { EstrategiaDetalle } from './paginas/EstrategiaDetalle'
 import { EstrategiaForm } from './paginas/EstrategiaForm'
 import { Estrategias } from './paginas/Estrategias'
-import { Inicio } from './paginas/Inicio'
 import { Login, rutaInicial } from './paginas/Login'
+import { MisSesiones } from './paginas/MisSesiones'
+import { Reportes } from './paginas/Reportes'
+import { SesionDetalleVista, Sesiones } from './paginas/Sesiones'
 import { Trazabilidad } from './paginas/Trazabilidad'
 
 /** CU-06: sin sesión va al ingreso; con un perfil distinto va a su página de inicio. */
@@ -41,12 +43,17 @@ export function Rutas() {
             <Route path="/estrategias/:id" element={<EstrategiaDetalle />} />
             <Route path="/estrategias/:id/editar" element={<EstrategiaForm />} />
             <Route path="/estrategias/:id/acompanamientos" element={<Acompanamientos />} />
+            <Route path="/mis-sesiones" element={<MisSesiones />} />
           </Route>
           <Route element={<Protegida roles={['Administrador']} />}>
             <Route path="/trazabilidad" element={<Trazabilidad />} />
           </Route>
-          <Route element={<Protegida roles={['Funcionario', 'EnteControl', 'LiderPilotaje']} />}>
-            <Route path="/inicio" element={<Inicio />} />
+          <Route element={<Protegida roles={['Funcionario', 'EnteControl', 'Administrador']} />}>
+            <Route path="/reportes" element={<Reportes />} />
+          </Route>
+          <Route element={<Protegida roles={['LiderPilotaje']} />}>
+            <Route path="/sesiones" element={<Sesiones />} />
+            <Route path="/sesiones/:id" element={<SesionDetalleVista />} />
           </Route>
         </Route>
       </Route>

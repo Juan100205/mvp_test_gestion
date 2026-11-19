@@ -76,6 +76,24 @@ namespace Sses.Infrastructure.Migraciones
                     b.ToTable("acompanamientos", (string)null);
                 });
 
+            modelBuilder.Entity("Sses.Domain.AsistenciaSesion", b =>
+                {
+                    b.Property<int>("SesionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TutorId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("IngresoEn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("SesionId", "TutorId");
+
+                    b.HasIndex("TutorId");
+
+                    b.ToTable("sesion_asistencias", (string)null);
+                });
+
             modelBuilder.Entity("Sses.Domain.Docente", b =>
                 {
                     b.Property<int>("Id")
@@ -102,6 +120,33 @@ namespace Sses.Infrastructure.Migraciones
                     b.HasIndex("EntidadId");
 
                     b.ToTable("docentes", (string)null);
+                });
+
+            modelBuilder.Entity("Sses.Domain.EncuestaPercepcion", b =>
+                {
+                    b.Property<int>("SesionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TutorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTimeOffset>("RespondidaEn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.PrimitiveCollection<List<int>>("Respuestas")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.HasKey("SesionId", "TutorId");
+
+                    b.HasIndex("TutorId");
+
+                    b.ToTable("sesion_encuestas", (string)null);
                 });
 
             modelBuilder.Entity("Sses.Domain.Entidad", b =>
@@ -247,6 +292,69 @@ namespace Sses.Infrastructure.Migraciones
                     b.ToTable("estudiantes", (string)null);
                 });
 
+            modelBuilder.Entity("Sses.Domain.IncidenteSesion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset>("RegistradoEn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SesionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SesionId");
+
+                    b.ToTable("sesion_incidentes", (string)null);
+                });
+
+            modelBuilder.Entity("Sses.Domain.MetricaPeticion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("Fecha")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Metodo")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<int>("Milisegundos")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Ruta")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId", "Fecha");
+
+                    b.ToTable("metricas_peticiones", (string)null);
+                });
+
             modelBuilder.Entity("Sses.Domain.RegistroAuditoria", b =>
                 {
                     b.Property<long>("Id")
@@ -336,6 +444,53 @@ namespace Sses.Infrastructure.Migraciones
                         });
                 });
 
+            modelBuilder.Entity("Sses.Domain.SesionPilotaje", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.PrimitiveCollection<List<int>>("Convocados")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<DateTimeOffset>("CreadaEn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("Fin")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("Inicio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LiderId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Convocados");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Convocados"), "gin");
+
+                    b.HasIndex("LiderId");
+
+                    b.HasIndex("Region", "Inicio");
+
+                    b.ToTable("sesiones_pilotaje", (string)null);
+                });
+
             modelBuilder.Entity("Sses.Domain.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -391,11 +546,41 @@ namespace Sses.Infrastructure.Migraciones
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Sses.Domain.AsistenciaSesion", b =>
+                {
+                    b.HasOne("Sses.Domain.SesionPilotaje", null)
+                        .WithMany("Asistencias")
+                        .HasForeignKey("SesionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sses.Domain.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("TutorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sses.Domain.Docente", b =>
                 {
                     b.HasOne("Sses.Domain.Entidad", null)
                         .WithMany()
                         .HasForeignKey("EntidadId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sses.Domain.EncuestaPercepcion", b =>
+                {
+                    b.HasOne("Sses.Domain.SesionPilotaje", null)
+                        .WithMany("Encuestas")
+                        .HasForeignKey("SesionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sses.Domain.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("TutorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -454,12 +639,30 @@ namespace Sses.Infrastructure.Migraciones
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Sses.Domain.IncidenteSesion", b =>
+                {
+                    b.HasOne("Sses.Domain.SesionPilotaje", null)
+                        .WithMany("Incidentes")
+                        .HasForeignKey("SesionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sses.Domain.Seguimiento", b =>
                 {
                     b.HasOne("Sses.Domain.Acompanamiento", null)
                         .WithMany("Seguimientos")
                         .HasForeignKey("AcompanamientoId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sses.Domain.SesionPilotaje", b =>
+                {
+                    b.HasOne("Sses.Domain.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("LiderId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -473,6 +676,15 @@ namespace Sses.Infrastructure.Migraciones
                     b.Navigation("Docentes");
 
                     b.Navigation("Estudiantes");
+                });
+
+            modelBuilder.Entity("Sses.Domain.SesionPilotaje", b =>
+                {
+                    b.Navigation("Asistencias");
+
+                    b.Navigation("Encuestas");
+
+                    b.Navigation("Incidentes");
                 });
 #pragma warning restore 612, 618
         }

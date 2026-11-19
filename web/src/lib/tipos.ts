@@ -104,3 +104,94 @@ export const nombreRol: Record<Rol, string> = {
   LiderPilotaje: 'Líder de pilotaje',
   Administrador: 'Administrador',
 }
+
+export interface TutorReporte {
+  id: number
+  nombre: string
+  region: string
+}
+
+export interface FiltrosReporte {
+  regiones: string[]
+  entidades: Entidad[]
+  tutores: TutorReporte[]
+  periodos: string[]
+  meses: string[]
+}
+
+export interface TipoReporte {
+  id: string
+  nombre: string
+  descripcion: string
+  grupo: string
+  filtros: string[]
+  requeridos: string[]
+}
+
+export interface Cifra {
+  etiqueta: string
+  valor: string
+  destacada: boolean
+}
+
+export interface TablaDocumento {
+  titulo: string
+  encabezado: string[]
+  numericas: number[]
+  filas: string[][]
+}
+
+/** Documento genérico del API: reportes (CU-04, CU-05) y consolidado de sesión (CU-07). */
+export interface Documento {
+  tipo: string
+  titulo: string
+  descripcion: string
+  generadoEn: string
+  filtros: string
+  cifras: Cifra[]
+  tablas: TablaDocumento[]
+  nota: string
+  sinDatos: boolean
+}
+
+export type EstadoSesion = 'Programada' | 'EnCurso' | 'Terminada'
+
+export interface SesionResumen {
+  id: number
+  nombre: string
+  region: string
+  inicio: string
+  fin: string
+  estado: EstadoSesion
+  convocados: number
+  asistentes: number
+  encuestas: number
+}
+
+export interface SesionDetalle {
+  id: number
+  nombre: string
+  region: string
+  inicio: string
+  fin: string
+  estado: EstadoSesion
+  convocados: { id: number; nombre: string; ingresoEn: string | null; encuestaRespondida: boolean }[]
+  incidentes: { id: number; descripcion: string; registradoEn: string }[]
+}
+
+export interface MiSesion {
+  id: number
+  nombre: string
+  region: string
+  inicio: string
+  fin: string
+  estado: EstadoSesion
+  puedeIngresar: boolean
+  ingresoEn: string | null
+  encuestaRespondida: boolean
+}
+
+export interface Pregunta {
+  clave: string
+  texto: string
+}

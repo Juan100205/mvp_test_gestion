@@ -61,12 +61,20 @@ export function Shell() {
   if (!sesion) return null
   const { usuario } = sesion
 
-  const enlaces: { a: string; texto: string; icono: NombreIcono }[] =
-    usuario.rol === 'Tutor'
-      ? [{ a: '/estrategias', texto: 'Estrategias', icono: 'estrategias' }]
-      : usuario.rol === 'Administrador'
-        ? [{ a: '/trazabilidad', texto: 'Trazabilidad', icono: 'registro' }]
-        : [{ a: '/inicio', texto: 'Inicio', icono: 'estrategias' }]
+  const menu: Record<typeof usuario.rol, { a: string; texto: string; icono: NombreIcono }[]> = {
+    Tutor: [
+      { a: '/estrategias', texto: 'Estrategias', icono: 'estrategias' },
+      { a: '/mis-sesiones', texto: 'Mis sesiones', icono: 'sesiones' },
+    ],
+    Administrador: [
+      { a: '/trazabilidad', texto: 'Trazabilidad', icono: 'registro' },
+      { a: '/reportes', texto: 'Reportes', icono: 'reporte' },
+    ],
+    Funcionario: [{ a: '/reportes', texto: 'Reportes', icono: 'reporte' }],
+    EnteControl: [{ a: '/reportes', texto: 'Reportes', icono: 'reporte' }],
+    LiderPilotaje: [{ a: '/sesiones', texto: 'Sesiones de pilotaje', icono: 'sesiones' }],
+  }
+  const enlaces = menu[usuario.rol]
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[15rem_1fr]">
@@ -123,6 +131,27 @@ export function Shell() {
       </aside>
 
       <div className="min-w-0">
+        {enlaces.length > 1 && (
+          <nav aria-label="Secciones" className="sticky top-[3.25rem] z-10 border-b border-duna bg-arena lg:hidden">
+            <ul className="flex gap-1 overflow-x-auto px-3 py-2">
+              {enlaces.map((e) => (
+                <li key={e.a}>
+                  <NavLink
+                    to={e.a}
+                    className={({ isActive }) =>
+                      `flex min-h-11 items-center gap-2 rounded-control px-3 text-sm font-medium ${
+                        isActive ? 'bg-tinta text-papel' : 'text-niebla hover:text-tinta'
+                      }`
+                    }
+                  >
+                    <Icono nombre={e.icono} className="size-4" />
+                    {e.texto}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
         <AvisoRechazos />
         <main className="mx-auto max-w-5xl px-5 pb-16 pt-6 sm:px-8 lg:pt-10">
           <Outlet />

@@ -6,11 +6,13 @@ interface Props {
   titulo: string
   subtitulo?: string
   onCerrar: () => void
+  /** 'amplio' para contenido ancho, como la vista previa de un documento. */
+  ancho?: 'normal' | 'amplio'
   children: ReactNode
 }
 
 /** Hoja inferior en celular y diálogo centrado en escritorio. Usa <dialog> nativo: foco atrapado y Esc para cerrar. */
-export function Hoja({ abierta, titulo, subtitulo, onCerrar, children }: Props) {
+export function Hoja({ abierta, titulo, subtitulo, onCerrar, ancho = 'normal', children }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -26,8 +28,8 @@ export function Hoja({ abierta, titulo, subtitulo, onCerrar, children }: Props) 
       onClose={onCerrar}
       onClick={(e) => e.target === ref.current && onCerrar()}
       aria-labelledby="hoja-titulo"
-      className="m-0 mt-auto w-full max-w-none animate-entrar-hoja rounded-t-hoja bg-papel p-0 text-tinta backdrop:bg-tinta/45
-        sm:m-auto sm:max-w-lg sm:rounded-hoja"
+      className={`m-0 mt-auto w-full max-w-none animate-entrar-hoja rounded-t-hoja bg-papel p-0 text-tinta backdrop:bg-tinta/45
+        sm:m-auto sm:rounded-hoja ${ancho === 'amplio' ? 'sm:max-w-5xl' : 'sm:max-w-lg'}`}
     >
       <div className="max-h-[88dvh] overflow-y-auto px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 sm:px-7 sm:pb-7">
         <header className="mb-5 flex items-start justify-between gap-4">

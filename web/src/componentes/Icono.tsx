@@ -12,6 +12,10 @@ const trazos = {
   cerrar: 'M6 6l12 12M18 6L6 18',
   usuario: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0',
   check: 'M5 12.5l4.5 4.5L19 7.5',
+  reporte: 'M4 20h16M7 20v-6M12 20V6M17 20v-9',
+  descargar: 'M12 4v11M7 10.5l5 5 5-5M5 20h14',
+  sesiones: 'M4 6.5h16v13H4zM4 10.5h16M8 4v4M16 4v4M8 14h3M8 17h6',
+  ojo: 'M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12zM12 14.75a2.75 2.75 0 1 0 0-5.5 2.75 2.75 0 0 0 0 5.5z',
 } as const
 
 export type NombreIcono = keyof typeof trazos

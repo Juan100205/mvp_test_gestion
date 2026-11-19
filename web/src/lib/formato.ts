@@ -15,11 +15,12 @@ export const operaciones: Record<string, string> = {
   'acompanamiento.registrar': 'Registró un acompañamiento',
   'seguimiento.registrar': 'Registró un seguimiento semanal',
   'seguimiento.actualizar': 'Actualizó un seguimiento semanal',
+  'reporte.descargar': 'Descargó un reporte',
 }
 
 export const describirOperacion = (codigo: string) => operaciones[codigo] ?? codigo
 
-function celda(valor: string | number | null) {
+export function celda(valor: string | number | null) {
   let texto = valor === null ? '' : String(valor)
   // Evita que Excel interprete el texto como fórmula (inyección CSV).
   if (/^[=+\-@]/.test(texto)) texto = `'${texto}`

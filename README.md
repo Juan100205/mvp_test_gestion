@@ -1,4 +1,4 @@
-# SSES: MVP del piloto (Sprints 1 a 3)
+# SSES: MVP del piloto (Sprints 1 a 4)
 
 **Demo en línea:** https://sses-piloto-mvp.vercel.app (usuarios más abajo; el primer ingreso puede tardar cerca de un minuto mientras despierta la API).
 
@@ -29,10 +29,12 @@ Para apagarlo: `docker compose down`. Para borrar también los datos: `docker co
 
 | Usuario | Perfil | Qué ve |
 |---|---|---|
-| `tutor.caribe` / `tutor.pacifico` | Tutor | Estrategias, estudiantes, acompañamientos |
+| `tutor.caribe` / `tutor.pacifico` | Tutor | Estrategias, estudiantes, acompañamientos y «Mis sesiones» (asistencia y encuesta) |
 | `tutor.bloqueo` | Tutor | Sirve para mostrar el bloqueo después de 5 intentos fallidos |
-| `admin.mineducacion` | Administrador | Trazabilidad y exportación a CSV |
-| `funcionario.men`, `ente.control`, `lider.piloto` | Otros perfiles | Aviso del módulo que llega en el Sprint 4 |
+| `admin.mineducacion` | Administrador | Trazabilidad (CSV) y todos los reportes |
+| `funcionario.men` | Funcionario del Ministerio | CU-04: desempeño, actividades y reportes de ley (cobertura y Ley 1581), con vista previa y exportación en CSV y PDF |
+| `ente.control` | Ente de control | CU-05: reporte autorizado de solo consulta (periodo, entidad, región y mes) |
+| `lider.piloto` | Líder de pilotaje | CU-07: programa sesiones por región y consulta el consolidado (asistencia, uso, incidentes y encuesta) |
 
 Estudiantes precargados: documentos `1100000001` a `1100000120` (tarjeta de identidad).
 
@@ -57,6 +59,9 @@ Para volver a este estado inicial: `docker compose down -v && docker compose up 
 4. **CU-03:** registrar un acompañamiento individual y el seguimiento de la semana. Repetir con el mismo docente para mostrar el flujo 4A.
 5. **RQ_21:** en las herramientas de desarrollo, activar *Offline*, registrar la semana siguiente (la barra se ve rayada en azul y aparece "1 por enviar"), volver a conectar y ver cómo se sincroniza sola.
 6. **Trazabilidad:** ingresar como `admin.mineducacion`, filtrar por usuario y descargar el CSV.
+7. **CU-05:** ingresar como `ente.control`: solo ve el reporte autorizado. Filtrar por región, abrir la vista previa y descargar el PDF.
+8. **CU-04:** ingresar como `funcionario.men`: desempeño de tutores, actividades y reportes de ley. «Cobertura del programa» pide el periodo (3A).
+9. **CU-07:** como `lider.piloto`, programar una sesión del Caribe convocando a `tutor.caribe`. Con `tutor.caribe` > «Mis sesiones», ingresar y enviar la encuesta incompleta (5A) y luego completa. Volver al líder y ver el consolidado y exportarlo.
 
 En `capturas/` están las pantallas de este recorrido en celular (`m*`) y en escritorio (`d*`).
 
@@ -74,6 +79,8 @@ npm run build     # verificación de tipos y build de producción
 
 ## Trazabilidad de requerimientos a pruebas
 
+La matriz completa (pasos, flujos alternos, implementación y pruebas de los Sprints 1 a 4) está en [`docs/MATRIZ-TRAZABILIDAD.md`](docs/MATRIZ-TRAZABILIDAD.md).
+
 | Requerimiento | Regla | Pruebas |
 |---|---|---|
 | CU-06 / RQ_13 | Acceso por perfil, bloqueo temporal tras 5 intentos, auditoría de ingresos | `AccesoTests`, `UsuarioTests`, `Login.test`, `App.test` |
@@ -85,8 +92,9 @@ npm run build     # verificación de tipos y build de producción
 | CU-03, 5A | Seguimiento semanal (semanas 1 a 5, avance de 0 a 100); actualizar la misma semana | `AcompanamientoTests`, `AcompanamientosTests`, `componentes.test` |
 | HU-07 | Historial por docente | `AcompanamientosTests`, `Acompanamientos.test` |
 | RQ_21, 6A | Registro sin conexión, cola en IndexedDB, reenvío idempotente con Id del cliente | `AcompanamientosTests`, `colaOffline.test`, `Acompanamientos.test` |
+| CU-05 / RQ_11, RQ_12 (base de CU-04 / RQ_09) | Reportes de solo lectura para ente de control y administrador: filtros, desempeño por tutor, CSV y PDF sin datos personales; cada descarga queda en la trazabilidad | `ReportesTests`, `Reportes.test`, `App.test` |
 
-Estado verificado el 18/11/2026: API 61/61, web 50/50 y recorrido E2E con Playwright contra el stack de Docker Compose (todos los flujos anteriores, incluida la desconexión real del navegador).
+Estado verificado el 19/11/2026: dominio 49/49, API 61/61, web 69/69 (Sprints 1 a 4). Antes, el 18/11/2026: API 61/61, web 50/50 y recorrido E2E con Playwright contra el stack de Docker Compose (todos los flujos anteriores, incluida la desconexión real del navegador).
 
 ## Despliegue en línea
 
