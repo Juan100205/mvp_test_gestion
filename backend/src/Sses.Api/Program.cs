@@ -15,8 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Datos
 builder.Services.AddDbContext<SsesDbContext>(o =>
-    o.UseNpgsql(builder.Configuration.GetConnectionString("Sses")
-                ?? throw new InvalidOperationException("Falta la cadena de conexión 'Sses'.")));
+    o.UseNpgsql(CadenaConexion.Normalizar(builder.Configuration.GetConnectionString("Sses")
+                ?? throw new InvalidOperationException("Falta la cadena de conexión 'Sses'."))));
 
 // Seguridad (RQ_13, RQ_20)
 var jwt = builder.Configuration.GetSection(OpcionesJwt.Seccion).Get<OpcionesJwt>() ?? new OpcionesJwt();

@@ -1,0 +1,33 @@
+# Blueprint de Render: API .NET (Docker) + Postgres en la misma región.
+services:
+  - type: web
+    name: sses-api
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: PORT
+        value: "8080"
+      - key: Jwt__Clave
+        generateValue: true
+      - key: Sses__InicializarBaseDeDatos
+        value: "true"
+      - key: Sses__CargarDatosDemo
+        value: "true"
+      - key: ConnectionStrings__Sses
+        fromDatabase:
+          name: sses-db
+          property: connectionString
+
+databases:
+  - name: sses-db
+    plan: free
+    region: oregon
+    databaseName: sses
+    user: sses
+    postgresMajorVersion: "17"
